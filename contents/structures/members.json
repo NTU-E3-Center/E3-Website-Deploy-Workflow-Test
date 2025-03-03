@@ -1,0 +1,165 @@
+[
+    {
+        "sectionTitle": "Principal Investigator",
+        "blockSize": "L",
+        "members": [
+            {
+                "engName": "I-Yun Lisa Hsieh",
+                "chiName": "謝依芸",
+                "description": "Department of Civil Engineering<br>Department of Chemical Engineering (Joint Appointment)<br>National Taiwan University",
+                "imgPath": "/assets/mem/iyhsieh.jpg",
+                "links": [
+                    {
+                        "icon": "/assets/sprite.svg#svg-send",
+                        "text": "iyhsieh@ntu.edu.tw",
+                        "link": "mailto:iyhsieh@ntu.edu.tw"
+                    },
+                    {
+                        "icon": "/assets/sprite.svg#svg-location",
+                        "text": "CERB 601",
+                        "link": "https://maps.app.goo.gl/crYHNJhSwBzqt2VJ8"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "sectionTitle": "Full Time / Ph.D. Students",
+        "blockSize": "M",
+        "members": [
+            {
+                "engName": "Jason",
+                "chiName": "譚竣文",
+                "email": "r10521612@ntu.edu.tw",
+                "imgPath": "/assets/mem/r10521612.jpg"
+            }
+        ]
+    },
+    {
+        "sectionTitle": "Master Students",
+        "blockSize": "M",
+        "members": [
+            {
+                "engName": "Ayria",
+                "chiName": "蔡佳妤",
+                "studentID": "r08521604",
+                "enterYear": "2019",
+                "email": ""
+            }
+        ]
+    },
+    {
+        "sectionTitle": "Visiting Students",
+        "blockSize": "S",
+        "filters": false,
+        "members": [
+            {
+                "engName": "Thomas",
+                "chiName": "簡元璽",
+                "imgPath": "/assets/m/r11521604.jpg",
+                "studentID": "r11521604",
+                "enterYear": "2022",
+                "graduated": true,
+                "pageLink": "/member/r11521604",
+                "pageContent": {
+                    "links": [
+                        {
+                            "icon": "/assets/sprite.svg#svg-link"
+                        }
+                    ],
+                    "about": "contents/articles/members/r11521604.md"
+                }
+            }
+        ]
+    },
+    {
+        "sectionTitle": "Alumni",
+        "blockSize": "S",
+        "filters": true,
+        "members": [
+            {
+                "engName": "Thomas",
+                "chiName": "簡元璽",
+                "chiNameEng": "Yuan-Hsi Chien",
+                "imgPath": "/assets/members/r11521604.jpg",
+                "studentId": "r11521604",
+                "admissionYear": "'22",
+                "graduated": true,
+                "pageLink": "/members/r11521604",
+                "pageContent": {
+                    "links": [
+                        {
+                            "icon": "/assets/sprite.svg#svg-hat-master-graduated"
+                        },
+                        {
+                            "icon": "/assets/sprite.svg#svg-honor",
+                            "text": "Creator of Website"
+                        },
+                        {
+                            "icon": "/assets/sprite.svg#svg-hash",
+                            "text": "r11521604"
+                        },
+                        {
+                            "icon": "/assets/sprite.svg#svg-send-g",
+                            "text": "hsi@caece.net",
+                            "link": "mailto:hsi@caece.net"
+                        },
+                        {
+                            "icon": "/assets/sprite.svg#svg-arrow-top-right",
+                            "text": "Personal Website",
+                            "link": "https://dobahsi.github.io"
+                        }
+                    ],
+                    "aboutSection": [
+                        {
+                            "sectionTitle": "About",
+                            "content": "contents/articles/members/r11521604.md"
+                        }
+                    ],
+                    "researchSection": [
+                        {
+                            "sectionTitle": "Research Topics",
+                            "topics": ["bss-v2g"]
+                        }
+                    ],
+                    "PublicationSection": [
+                        {
+                            "sectionTitle": "Journal Publications",
+                            "publications": ["tUbPb-QAAAAJ:hqOjcs7Dif8C", "tUbPb-QAAAAJ:QIV2ME_5wuYC", "tUbPb-QAAAAJ:mVmsd5A6BfQC"]
+                        },
+                        {
+                            "sectionTitle": "Conference Publications",
+                            "manual": true,
+                            "publications": [
+                                {
+                                    "title": "The 104th Transportation Research Board (TRB) Annual Meeting",
+                                    "subTitle": "Washington, DC.",
+                                    "year": 2025,
+                                    "month": "Jan."
+                                },
+                                {
+                                    "title": "The 104th Transportation Research Board (TRB) Annual Meeting",
+                                    "subTitle": "Washington, DC.",
+                                    "year": 2025,
+                                    "month": "Jan."
+                                },
+                                {
+                                    "title": "The 104th Transportation Research Board (TRB) Annual Meeting",
+                                    "subTitle": "Washington, DC.",
+                                    "year": 2025,
+                                    "month": "Jan."
+                                },
+                                {
+                                    "title": "The 104th Transportation Research Board (TRB) Annual Meeting",
+                                    "subTitle": "Washington, DC.",
+                                    "year": 2025,
+                                    "month": "Jan."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]
