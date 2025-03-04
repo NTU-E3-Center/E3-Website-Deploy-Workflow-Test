@@ -4,17 +4,30 @@
         "sectionTitle": "The NTU E3 Research Center",
         "article": "contents/articles/about.md",
         "logos": [
-            "/assets/image/e3-logo-text.svg",
-            "/assets/image/ntu-logo-text.svg"
+            {
+                "logoPath": "/assets/image/e3-logo-text.svg",
+                "logoAlt": "NTU E3 Center"
+            },
+            {
+                "logoPath": "/assets/image/ntu-logo-text.svg",
+                "logoAlt": "National Taiwan University"
+            }
         ]
     },
     {
         "form": "sponsors",
         "sectionTitle": "Sponsors",
+        "display": false,
         "logos": [
-            "/assets/image/ntu-logo-text.svg",
-            "/assets/image/ntu-logo-text.svg",
-            "/assets/image/ntu-logo-text.svg"
+            {
+                "logoPath": "/assets/image/e3-logo-text.svg",
+                "logoAlt": "NTU E3 Center"
+            },
+            {
+                "logoPath": "/assets/image/ntu-logo-text.svg",
+                "logoAlt": "National Taiwan University",
+                "logoLink": "https://www.ntu.edu.tw/"
+            }
         ]
     }
 ]
