@@ -1,20 +1,18 @@
-[
-    {
-        "form": "about",
-        "sectionTitle": "The NTU E3 Research Center",
+{
+    "main": {
+        "h3": "The NTU E3 Research Group",
         "article": "contents/articles/about.md",
         "logos": [
             "/assets/image/e3-logo-text.svg",
             "/assets/image/ntu-logo-text.svg"
         ]
     },
-    {
-        "form": "sponsors",
-        "sectionTitle": "Sponsors",
+    "sponsors": {
+        "h3": "Sponsors",
         "logos": [
             "/assets/image/ntu-logo-text.svg",
             "/assets/image/ntu-logo-text.svg",
             "/assets/image/ntu-logo-text.svg"
         ]
     }
-]
+}
