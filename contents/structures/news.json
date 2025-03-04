@@ -1,6 +1,7 @@
 [
     {
         "sectionTitle": "Recent News",
+        "showInHome": 6,
         "items": [    
             {
                 "title": "Prof. Hsieh honored with the NTU NTU Outstanding Scholar Award of Chen-Yung Foundation (臺大勇源拔萃講座).",
