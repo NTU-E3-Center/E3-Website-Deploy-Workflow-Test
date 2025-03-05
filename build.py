@@ -2,30 +2,47 @@ import os
 import shutil
 import json
 from datetime import datetime
+import markdown
 from jinja2 import Environment, FileSystemLoader
 
 # Set up Jinja2 environment
-env = Environment(loader=FileSystemLoader('templates'))
+env = Environment(loader=FileSystemLoader(['templates', 'contents']),
+                  trim_blocks=True,
+                  lstrip_blocks=True)
 
-# Load pages from an external JSON file
-with open("contents/pages.json", "r") as f:
+# Load page structure from an external JSON file
+with open("contents/structures/pages.json", "r") as f:
     pages = json.load(f)
 
-# Loop through each file in the folder
-contents_path = 'contents'
-contents = {}
-for filename in os.listdir(contents_path):
+# Output directory
+output_dir = "dist"
+
+# Load JSON files from contents/structures
+structures_path = 'contents/structures'
+structures = {}
+for filename in os.listdir(structures_path):
     if filename.endswith('.json'):
-        file_path = os.path.join(contents_path, filename)
+        print(filename)
+        file_path = os.path.join(structures_path, filename)
         with open(file_path, 'r', encoding='utf-8') as f:
             # Load JSON content
             data = json.load(f)
         # Create a key based on the file name (without the .json extension)
         var_name = os.path.splitext(filename)[0]
-        contents[var_name] = data
+        structures[var_name] = data
 
-# Output directory
-output_dir = "dist"
+articles_path = 'contents/articles'
+articles = {}
+for filename in os.listdir(articles_path):
+    if filename.endswith('.md'):
+        file_path = os.path.join(articles_path, filename)
+        with open(file_path, 'r', encoding='utf-8') as f:
+            # Load md content
+            md_text = f.read()
+            html_content = markdown.markdown(md_text, extensions=['md_in_html'])
+        # Create a key based on the file name (without the .json extension)
+        var_name = os.path.splitext(filename)[0]
+        articles[var_name] = html_content
 
 # Function to render templates into correct directories
 def render_templates():
@@ -35,8 +52,9 @@ def render_templates():
                 template = env.get_template(f"{template_name}.html")
                 output = template.render(
                     title=page_data.get("title"),
-                    updated_time=datetime.now().strftime("%Y. %m. %d"),
-                    contents=contents
+                    updated_time=datetime.now().strftime("%Y. %m. %d %H:%M"),
+                    structures=structures,
+                    articles=articles
                 )
                 
                 # Define full output path (subdirectories)
