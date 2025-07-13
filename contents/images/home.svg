@@ -270,7 +270,7 @@
                 </g>
             </g>
             <text class="hp-plane-text" x="1479.7" y="38.39" dominant-baseline="middle">
-                {{ structures['news'][0]['title'] }}
+                {{ structures['news'][0]['items'][-1]['title'] }}
             </text>
         </g>
     </a>
