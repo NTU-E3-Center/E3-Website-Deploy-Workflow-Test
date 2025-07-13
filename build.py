@@ -16,7 +16,7 @@ with open("contents/structures/pages.json", "r") as f:
     pages = json.load(f)
 
 # Output directory
-output_dir = "dist"
+output_dir = "docs"
 
 # Load JSON files from contents/structures
 structures_path = 'contents/structures'
@@ -71,7 +71,7 @@ def render_templates():
     print("Templates rendered successfully!")
 
 
-# Function to copy static assets directly into dist/
+# Function to copy static assets directly into docs/
 def copy_static():
     static_src = "static"
     if os.path.exists(static_src):
@@ -84,7 +84,7 @@ def copy_static():
             else:
                 shutil.copy2(src_path, dst_path)
 
-    print("Static assets copied directly into dist/")
+    print("Static assets copied directly into docs/")
 
 
 # Compress images and convert to WebP format
@@ -146,7 +146,7 @@ def compress_and_convert_images():
 
     for folder, paths in image_paths_by_folder.items():
         print(f"--- Images found in '{folder}' ---")
-        dst_path = f"dist/assets/{folder}"
+        dst_path = f"docs/assets/{folder}"
         os.makedirs(dst_path, exist_ok=True)
         for path in paths:
             shutil.copy2(path, dst_path)
