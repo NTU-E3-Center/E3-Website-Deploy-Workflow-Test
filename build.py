@@ -1,10 +1,10 @@
 import os
-import shutil
 import json
-from datetime import datetime
+import shutil
 import markdown
-from jinja2 import Environment, FileSystemLoader
 from PIL import Image
+from datetime import datetime
+from jinja2 import Environment, FileSystemLoader
 
 # Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader(['templates', 'contents']),
@@ -88,7 +88,7 @@ def copy_static():
 
 
 # Compress images and convert to WebP format
-base_directory = 'contents/images'
+images_path = 'contents/images'
 members_img_sizes = [200, 400, 600, 800]
 globals()[r'group-life_img_sizes'] = [200, 400, 600, 800, 1200, 1600, 2000]
 lazy_img_sizes = [20]
@@ -142,7 +142,7 @@ def convert_to_webp(path, dst_path, sizes, compression_quality=100):
 
 
 def compress_and_convert_images():
-    image_paths_by_folder = get_separated_image_paths(base_directory)
+    image_paths_by_folder = get_separated_image_paths(images_path)
 
     for folder, paths in image_paths_by_folder.items():
         print(f"--- Images found in '{folder}' ---")
