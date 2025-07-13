@@ -32,24 +32,24 @@
                     <use data-check="{{ topic['fields']['economics'] }}" href="/assets/sprite.svg#svg-field-economics"></use>
                     <use data-check="{{ topic['fields']['environment'] }}" href="/assets/sprite.svg#svg-field-environment"></use>
                 </svg>
+            </div>
 
-                <a class="res-img-block skewed-block" b-role="block">
-                    {% include topic['image'] %}
-                </a>
+            <a class="res-img-block skewed-block" b-role="block">
+                {% include topic['image'] %}
+            </a>
 
-                <div class="res-info">
-                    {% for bigTag in topic['bigTags'] %}
-                    <div class="res-tag">
-                        <span class="res-tag-icon">#</span>
-                        <span class="res-tag-text">{{ bigTag }}</span>
-                    </div>
+            <div class="res-info">
+                {% for bigTag in topic['bigTags'] %}
+                <div class="res-tag">
+                    <span class="res-tag-icon">#</span>
+                    <span class="res-tag-text">{{ bigTag }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="res-info-minor">
+                    {% for smallTag in topic['smallTags'] %}
+                    {{ smallTag }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
-
-                    <div class="res-info-minor">
-                        {% for smallTag in topic['smallTags'] %}
-                        {{ smallTag }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
         </div>
