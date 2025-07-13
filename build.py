@@ -52,7 +52,7 @@ def render_templates():
                 template = env.get_template(f"{template_name}.html")
                 output = template.render(
                     title=page_data.get("title"),
-                    updated_time=datetime.now().strftime("%Y. %m. %d %H:%M"),
+                    updated_time=datetime.now().strftime("%Y. %m. %d"),
                     structures=structures,
                     articles=articles
                 )
