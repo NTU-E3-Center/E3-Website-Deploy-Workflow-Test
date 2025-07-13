@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install os json shutil markdown Pillow datetime jinja2
+          pip install markdown Pillow jinja2
 
       - name: Run build script
         run: python build.py
