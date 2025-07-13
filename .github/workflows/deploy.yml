@@ -45,29 +45,13 @@ jobs:
       - name: Run build script
         run: python build.py
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload the 'docs' directory
-          path: './docs'
-
-  # Deployment job
-  deploy:
-    # Add a dependency to the build job
-    needs: build
-    # Grant GITHUB_TOKEN the permissions required to deploy to GitHub Pages
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
+      # Deploy the build folder to the gh-pages branch
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # This token is provided by Actions, you do not need to create your own token
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # The branch you want to deploy to.
+          publish_branch: gh-pages
+          publish_dir: ./docs
