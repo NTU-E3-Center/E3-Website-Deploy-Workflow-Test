@@ -876,7 +876,7 @@
             
             & > * {opacity: 0.2;}
 
-            & [data-check="true"] {opacity: 1;}
+            & [data-check="True"] {opacity: 1;}
         }
     }
 
