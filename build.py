@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import markdown
 from jinja2 import Environment, FileSystemLoader
+from PIL import Image
 
 # Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader(['templates', 'contents']),
@@ -22,7 +23,6 @@ structures_path = 'contents/structures'
 structures = {}
 for filename in os.listdir(structures_path):
     if filename.endswith('.json'):
-        print(filename)
         file_path = os.path.join(structures_path, filename)
         with open(file_path, 'r', encoding='utf-8') as f:
             # Load JSON content
@@ -70,6 +70,7 @@ def render_templates():
     process_pages(pages)
     print("Templates rendered successfully!")
 
+
 # Function to copy static assets directly into dist/
 def copy_static():
     static_src = "static"
@@ -85,9 +86,81 @@ def copy_static():
 
     print("Static assets copied directly into dist/")
 
+
+# Compress images and convert to WebP format
+base_directory = 'contents/images'
+members_img_sizes = [200, 400, 600, 800]
+globals()[r'group-life_img_sizes'] = [200, 400, 600, 800, 1200, 1600, 2000]
+lazy_img_sizes = [20]
+
+def get_separated_image_paths(directory):
+    """
+    Finds image paths and separates them by their top-level subdirectory.
+
+    Args:
+        directory (str): The path to the main directory (e.g., 'contents/images').
+
+    Returns:
+        dict: A dictionary where keys are folder names and values are lists of
+              image file paths within those folders.
+    """
+    separated_paths = {}
+    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
+
+    # First, find all top-level subdirectories
+    try:
+        # List items in the base directory and filter for directories
+        subdirectories = [item for item in os.listdir(directory)
+                          if os.path.isdir(os.path.join(directory, item))]
+    except FileNotFoundError:
+        print(f"Error: The directory '{directory}' was not found.")
+        return {}
+
+    # Now, walk through each subdirectory to find images
+    for subdir in subdirectories:
+        image_list = []
+        subdir_path = os.path.join(directory, subdir)
+        for root, _, files in os.walk(subdir_path):
+            for file in files:
+                # Check for valid, non-SVG image extensions
+                if any(file.lower().endswith(ext) for ext in image_extensions):
+                    image_list.append(os.path.join(root, file))
+
+        # Only add the folder to the dictionary if it contains images
+        if image_list:
+            separated_paths[subdir] = image_list
+
+    return separated_paths
+
+def convert_to_webp(path, dst_path, sizes, compression_quality=100):
+    basename = os.path.splitext(os.path.basename(path))[0]
+    with Image.open(path) as img:
+        for size in sizes:
+            img_resized = img.resize((size, int(size * img.height / img.width)))
+            webp_output_path = f"{dst_path}/{basename}-{size}w.webp"
+            img_resized.save(webp_output_path, "WEBP", quality=compression_quality)
+
+
+def compress_and_convert_images():
+    image_paths_by_folder = get_separated_image_paths(base_directory)
+
+    for folder, paths in image_paths_by_folder.items():
+        print(f"--- Images found in '{folder}' ---")
+        dst_path = f"dist/assets/{folder}"
+        os.makedirs(dst_path, exist_ok=True)
+        for path in paths:
+            shutil.copy2(path, dst_path)
+            convert_to_webp(path, dst_path, globals()[f'{folder}_img_sizes'], compression_quality=70)
+            convert_to_webp(path, dst_path, lazy_img_sizes, compression_quality=10)
+            print(f"{path} copied and converted to WebP")
+        
+
 # Run the build process
 if __name__ == "__main__":
-    print("Building static site...")
+    print("Rendering templates...")
     render_templates()
+    print("Copying static assets...")
     copy_static()
+    print("Compressing images and converting to WebP format...")
+    compress_and_convert_images()
     print("Build complete!")

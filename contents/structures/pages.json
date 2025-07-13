@@ -6,11 +6,5 @@
     "news": {
         "path": "news",
         "title": "News | E3 Center"
-    },
-    "member": {
-        "member": {
-            "path": "member/yuan-hsi-chien",
-            "title": "Yuan-Hsi Chien | E3 Center"
-        }
     }
 }
