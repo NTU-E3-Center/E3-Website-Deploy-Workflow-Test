@@ -7,12 +7,12 @@
     </div>
 
     {% for news in structures['news'] %}
-    <h3>{{ news['sectionTitle'] }}</h3>
+    <h3>{{ news['innerSectionTitle'] }}</h3>
     <section class="publi-section">
         <svg class="publi-quote"><use href="/assets/sprite.svg#svg-quote"></use></svg>
 
         <div class="publi-block-wrapper">
-            {% for item in news['items'] %}
+            {% for item in news['items'][::-1] %}
             <div class="publi-block">
                 <div class="publi-date">
                     <div class="publi-date-mm">{{ item['month'] }}</div>
