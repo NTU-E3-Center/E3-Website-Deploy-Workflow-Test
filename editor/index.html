@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub File Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .btn {
+            @apply inline-block px-6 py-3 text-center font-semibold text-white bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300;
+        }
+        .btn-secondary {
+            @apply bg-gray-600 hover:bg-gray-500;
+        }
+        #editor {
+            height: 400px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">GitHub File Editor</h1>
+            <p class="text-lg text-gray-600 mt-2">Login with GitHub, edit a file, and push your changes.</p>
+        </header>
+
+        <main id="main-content" class="bg-white p-8 rounded-xl shadow-lg">
+            <!-- Step 1: Login -->
+            <div id="login-section">
+                <h2 class="text-2xl font-semibold mb-4">Step 1: Authenticate</h2>
+                <p class="mb-6">Click the button below to log in with your GitHub account. This will grant the application permission to access your repositories.</p>
+                <button id="login-btn" class="btn">
+                    <svg class="inline-block w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" />
+                    </svg>
+                    Login with GitHub
+                </button>
+            </div>
+
+            <!-- Step 2: Repository and File Selection -->
+            <div id="repo-section" class="hidden">
+                <h2 class="text-2xl font-semibold mb-4">Step 2: Select Repository and File</h2>
+                <div class="mb-4">
+                    <label for="repo-select" class="block text-sm font-medium text-gray-700 mb-1">Your Repositories:</label>
+                    <select id="repo-select" class="w-full p-2 border border-gray-300 rounded-md"></select>
+                </div>
+                <div class="mb-4">
+                    <label for="file-path" class="block text-sm font-medium text-gray-700 mb-1">File Path:</label>
+                    <input type="text" id="file-path" class="w-full p-2 border border-gray-300 rounded-md" placeholder="e.g., README.md">
+                </div>
+                <button id="fetch-file-btn" class="btn">Fetch File</button>
+                 <button id="logout-btn" class="btn btn-secondary ml-2">Logout</button>
+            </div>
+
+            <!-- Step 3: Editor -->
+            <div id="editor-section" class="hidden">
+                <h2 class="text-2xl font-semibold mb-4">Step 3: Edit and Push</h2>
+                 <div id="file-info" class="text-sm text-gray-500 mb-2"></div>
+                <textarea id="editor" class="w-full p-2 border border-gray-300 rounded-md font-mono"></textarea>
+                <div class="mt-4">
+                    <label for="commit-message" class="block text-sm font-medium text-gray-700 mb-1">Commit Message:</label>
+                    <input type="text" id="commit-message" class="w-full p-2 border border-gray-300 rounded-md" placeholder="e.g., Update README.md">
+                </div>
+                <button id="push-btn" class="btn mt-4">Push Changes</button>
+            </div>
+
+            <!-- Message Area -->
+            <div id="message-area" class="mt-6 p-4 rounded-md text-center hidden"></div>
+        </main>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // IMPORTANT: You need to create a GitHub OAuth App to get these credentials.
+        // Go to your GitHub Settings > Developer settings > OAuth Apps > New OAuth App
+        // Set 'Authorization callback URL' to the URL where you are hosting this page.
+        const GITHUB_CLIENT_ID = 'YOUR_GITHUB_CLIENT_ID'; // Replace with your GitHub OAuth App's Client ID
+        const GITHUB_CLIENT_SECRET = 'YOUR_GITHUB_CLIENT_SECRET'; // Replace with your Client Secret
+        const REDIRECT_URI = window.location.href.split('?')[0];
+        
+        // --- DOM ELEMENTS ---
+        const loginSection = document.getElementById('login-section');
+        const repoSection = document.getElementById('repo-section');
+        const editorSection = document.getElementById('editor-section');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const repoSelect = document.getElementById('repo-select');
+        const filePathInput = document.getElementById('file-path');
+        const fetchFileBtn = document.getElementById('fetch-file-btn');
+        const editor = document.getElementById('editor');
+        const fileInfo = document.getElementById('file-info');
+        const commitMessageInput = document.getElementById('commit-message');
+        const pushBtn = document.getElementById('push-btn');
+        const messageArea = document.getElementById('message-area');
+
+        // --- STATE ---
+        let accessToken = null;
+        let user = null;
+        let selectedRepo = null;
+        let fileSha = null;
+
+        // --- GITHUB API HELPERS ---
+        const githubApi = {
+            async request(endpoint, options = {}) {
+                const url = `https://api.github.com${endpoint}`;
+                const headers = {
+                    'Accept': 'application/vnd.github.v3+json',
+                    ...options.headers,
+                };
+                if (accessToken) {
+                    headers['Authorization'] = `token ${accessToken}`;
+                }
+
+                const response = await fetch(url, { ...options, headers });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || `GitHub API request failed: ${response.statusText}`);
+                }
+                // Handle responses with no content
+                if (response.status === 204 || response.status === 201) {
+                    return;
+                }
+                return response.json();
+            }
+        };
+
+
+        // --- UI LOGIC ---
+        function showMessage(message, isError = false) {
+            messageArea.textContent = message;
+            messageArea.className = `mt-6 p-4 rounded-md text-center ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+            messageArea.classList.remove('hidden');
+        }
+
+        function hideMessage() {
+            messageArea.classList.add('hidden');
+        }
+        
+        function updateUIForLogin() {
+            loginSection.classList.add('hidden');
+            repoSection.classList.remove('hidden');
+            editorSection.classList.add('hidden');
+            hideMessage();
+        }
+
+        function updateUIForLogout() {
+            loginSection.classList.remove('hidden');
+            repoSection.classList.add('hidden');
+            editorSection.classList.add('hidden');
+            accessToken = null;
+            user = null;
+            sessionStorage.removeItem('github_access_token');
+            history.replaceState(null, '', REDIRECT_URI); // Clean URL
+            hideMessage();
+        }
+
+
+        // --- AUTHENTICATION ---
+        loginBtn.addEventListener('click', () => {
+             if (GITHUB_CLIENT_ID === 'YOUR_GITHUB_CLIENT_ID') {
+                showMessage('Please configure your GitHub Client ID in the script.', true);
+                return;
+            }
+            const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=repo`;
+            window.location.href = authUrl;
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            updateUIForLogout();
+            showMessage('You have been logged out.');
+        });
+
+        async function handleOAuthCallback(code) {
+            showMessage('Authenticating with GitHub...');
+            try {
+                // Note: In a real-world app, this token exchange should happen on a server-side proxy
+                // to keep the client_secret confidential. Exposing it client-side is a security risk.
+                // This is simplified for this static site example.
+                const tokenUrl = `https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token`;
+                const response = await fetch(tokenUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        client_id: GITHUB_CLIENT_ID,
+                        client_secret: GITHUB_CLIENT_SECRET,
+                        code: code,
+                        redirect_uri: REDIRECT_URI
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to exchange authorization code for token.');
+                }
+
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error_description);
+                }
+                
+                accessToken = data.access_token;
+                sessionStorage.setItem('github_access_token', accessToken);
+                await initializeUser();
+            } catch (error) {
+                showMessage(`Authentication failed: ${error.message}`, true);
+                updateUIForLogout();
+            }
+        }
+
+        async function initializeUser() {
+            try {
+                showMessage('Fetching user information...');
+                user = await githubApi.request('/user');
+                showMessage(`Welcome, ${user.login}!`);
+                updateUIForLogin();
+                await fetchUserRepos();
+            } catch (error) {
+                showMessage(`Error fetching user data: ${error.message}`, true);
+                updateUIForLogout();
+            }
+        }
+        
+        // --- REPO AND FILE LOGIC ---
+        async function fetchUserRepos() {
+            try {
+                showMessage('Fetching your repositories...');
+                const repos = await githubApi.request('/user/repos?sort=updated&per_page=100');
+                repoSelect.innerHTML = repos
+                    .map(repo => `<option value="${repo.full_name}">${repo.full_name}</option>`)
+                    .join('');
+                hideMessage();
+            } catch (error) {
+                showMessage(`Error fetching repositories: ${error.message}`, true);
+            }
+        }
+
+        fetchFileBtn.addEventListener('click', async () => {
+            selectedRepo = repoSelect.value;
+            const filePath = filePathInput.value.trim();
+
+            if (!selectedRepo || !filePath) {
+                showMessage('Please select a repository and provide a file path.', true);
+                return;
+            }
+            
+            showMessage(`Fetching '${filePath}' from '${selectedRepo}'...`);
+            editorSection.classList.add('hidden');
+
+            try {
+                const fileContent = await githubApi.request(`/repos/${selectedRepo}/contents/${filePath}`);
+                
+                if (fileContent.type !== 'file') {
+                     throw new Error('The path does not point to a file.');
+                }
+                
+                // Content is base64 encoded
+                editor.value = atob(fileContent.content);
+                fileSha = fileContent.sha;
+                fileInfo.textContent = `Editing: ${selectedRepo}/${filePath}`;
+                commitMessageInput.value = `Update ${filePath}`;
+
+                editorSection.classList.remove('hidden');
+                hideMessage();
+            } catch (error) {
+                showMessage(`Error fetching file: ${error.message}`, true);
+            }
+        });
+
+        // --- PUSH LOGIC ---
+        pushBtn.addEventListener('click', async () => {
+            const filePath = filePathInput.value.trim();
+            const content = editor.value;
+            const commitMessage = commitMessageInput.value.trim();
+
+            if (!commitMessage) {
+                showMessage('Please enter a commit message.', true);
+                return;
+            }
+
+            showMessage('Pushing changes to GitHub...');
+            
+            try {
+                // Content must be base64 encoded for the API
+                const encodedContent = btoa(content);
+
+                await githubApi.request(`/repos/${selectedRepo}/contents/${filePath}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        message: commitMessage,
+                        content: encodedContent,
+                        sha: fileSha, // Important: include the sha to update the file
+                        committer: {
+                            name: user.name || user.login,
+                            email: user.email || `${user.login}@users.noreply.github.com`
+                        }
+                    })
+                });
+
+                showMessage('File pushed successfully!', false);
+                editorSection.classList.add('hidden'); // Hide editor after successful push
+            } catch (error) {
+                showMessage(`Error pushing file: ${error.message}`, true);
+            }
+        });
+
+        // --- INITIALIZATION ON PAGE LOAD ---
+        window.onload = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+
+            const storedToken = sessionStorage.getItem('github_access_token');
+
+            if (code) {
+                await handleOAuthCallback(code);
+            } else if (storedToken) {
+                accessToken = storedToken;
+                await initializeUser();
+            } else {
+                updateUIForLogout();
+            }
+        };
+    </script>
+</body>
+</html>
